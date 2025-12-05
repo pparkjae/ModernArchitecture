@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="11">
+      <module name="modernsample.core.navigation" target="17" />
+      <module name="modernsample.feature.character" target="17" />
+      <module name="modernsample.feature.user" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
