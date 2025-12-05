@@ -4,6 +4,7 @@
 
 ## Module Hierarchy
 
+```text
 root
 ├── app                 # 최종 애플리케이션 모듈 (의존성 그래프의 최상위)
 ├── feature             # 사용자에게 보이는 화면 및 기능 단위 (독립적 실행 가능 지향)
@@ -17,7 +18,7 @@ root
     ├── design          # 공통 UI 컴포넌트 및 테마 (Design System)
     ├── test            # Test Data 및 Test Repository
     └── domain          # 복잡한 유스케이스 (선택적 사용 예정)
-
+```
 
 ## Feature Modules (:feature)
 
@@ -43,3 +44,9 @@ DI: Hilt
 Async: Coroutines & Flow
 Network: Retrofit2 & OkHttp
 Image Loader: Coil
+
+**
+local.properties에 
+GITHUB_ACCESS_TOKEN=********
+본인 GITHUB ACCESS TOKEN을 넣어서 실행하면 동작
+**
