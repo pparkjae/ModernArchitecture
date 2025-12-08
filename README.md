@@ -25,6 +25,7 @@ root
 UI Layer: Jetpack Compose를 사용한 화면(Screen)과 상태 관리를 위한 ViewModel
 androidTest: UI 테스트
 test: ViewModel 및 비즈니스 로직 단위 테스트
+```
 
 ## Core Modules (:core)
 ```text
@@ -44,10 +45,8 @@ Async: Coroutines & Flow
 Network: Retrofit2 & OkHttp
 Image Loader: Coil
 ```
+
+## Setting
 ```text
-**
-local.properties에 
-GITHUB_ACCESS_TOKEN=********
-본인 GITHUB ACCESS TOKEN을 넣어서 실행하면 동작
-**
-```
+local.properties에 GITHUB_ACCESS_TOKEN=******** //본인 GITHUB ACCESS TOKEN 설정 필요
+
