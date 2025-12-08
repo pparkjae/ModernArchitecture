@@ -36,4 +36,5 @@ dependencies {
     api(libs.androidx.ui.test.junit4)
     api(libs.androidx.ui.test.manifest)
     api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.ui.tooling)
 }

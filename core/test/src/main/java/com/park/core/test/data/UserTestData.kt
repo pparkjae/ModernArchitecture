@@ -6,7 +6,6 @@ import com.park.core.model.GitUserRepos
 
 val testUser = GitUser(
     name = "Park",
-    email = "park@test.com",
     htmlUrl = "https://github.com/park",
     avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4",
     login = "pparkjae",

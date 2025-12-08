@@ -5,7 +5,7 @@ import com.park.core.model.GitUserRepos
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun user(): Flow<GitUser>
+    fun user(id: String): Flow<GitUser>
 
-    fun userRepos(): Flow<List<GitUserRepos>>
+    fun userRepos(id: String): Flow<List<GitUserRepos>>
 }

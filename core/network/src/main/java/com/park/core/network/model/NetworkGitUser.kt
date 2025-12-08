@@ -26,5 +26,4 @@ data class NetworkGitUser(
     @SerialName("user_view_type") val userViewType: String,
     @SerialName("site_admin") val siteAdmin: Boolean,
     @SerialName("name") val name: String,
-    @SerialName("email") val email: String,
 )

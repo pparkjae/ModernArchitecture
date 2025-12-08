@@ -20,5 +20,4 @@ data class GitUser(
     val userViewType: String,
     val siteAdmin: Boolean,
     val name: String,
-    val email: String,
 )

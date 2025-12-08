@@ -46,7 +46,3 @@ Network: Retrofit2 & OkHttp
 Image Loader: Coil
 ```
 
-## Setting
-```text
-local.properties에 GITHUB_ACCESS_TOKEN=******** //본인 GITHUB ACCESS TOKEN 설정 필요
-
