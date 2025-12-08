@@ -13,11 +13,11 @@ import javax.inject.Inject
 internal class GithubUserRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource
 ) : UserRepository {
-    override fun user(): Flow<GitUser> = flow {
-        emit(networkDataSource.user().asExternalModel())
+    override fun user(id: String): Flow<GitUser> = flow {
+        emit(networkDataSource.user(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 
-    override fun userRepos(): Flow<List<GitUserRepos>> = flow {
-        emit(networkDataSource.useRepos().asExternalModel())
+    override fun userRepos(id: String): Flow<List<GitUserRepos>> = flow {
+        emit(networkDataSource.useRepos(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 }

@@ -28,7 +28,6 @@ fun NetworkGitUser.asExternalModel(): GitUser =
         userViewType = userViewType,
         siteAdmin = siteAdmin,
         name = name,
-        email = email
     )
 
 fun NetworkUserData.asExternalModel() =

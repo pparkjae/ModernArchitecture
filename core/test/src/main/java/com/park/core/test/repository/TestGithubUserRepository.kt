@@ -13,12 +13,12 @@ class TestGithubUserRepository : UserRepository {
     private val reposFlow = MutableSharedFlow<List<GitUserRepos>>(replay = 1)
     private var shouldThrowError = false
 
-    override fun user(): Flow<GitUser> = flow {
+    override fun user(id: String): Flow<GitUser> = flow {
         if (shouldThrowError) throw Exception("Test Error")
         userFlow.collect { emit(it) }
     }
 
-    override fun userRepos(): Flow<List<GitUserRepos>> = flow {
+    override fun userRepos(id: String): Flow<List<GitUserRepos>> = flow {
         if (shouldThrowError) throw Exception("Test Error")
         reposFlow.collect { emit(it) }
     }

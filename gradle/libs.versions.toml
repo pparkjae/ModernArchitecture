@@ -27,6 +27,7 @@ firebaseFirestoreKtx = "26.0.2"
 androidxNavigation = "2.8.5"
 coil = "2.7.0"
 turbine = "1.2.1"
+uiTooling = "1.9.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -17,20 +15,8 @@ android {
         buildConfig = true
     }
 
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localProperties.load(localPropertiesFile.inputStream())
-    }
-
     defaultConfig {
         minSdk = 23
-
-        buildConfigField(
-            "String",
-            "GITHUB_ACCESS_TOKEN",
-            "\"${localProperties.getProperty("GITHUB_ACCESS_TOKEN") ?: ""}\""
-        )
     }
 
     compileOptions {

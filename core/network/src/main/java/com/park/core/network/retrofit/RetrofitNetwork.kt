@@ -1,13 +1,10 @@
 package com.park.core.network.retrofit
 
-import com.park.core.network.BuildConfig
 import com.park.core.network.NetworkDataSource
 import com.park.core.network.api.NetworkApi
 import com.park.core.network.model.NetworkUserData
-import com.park.core.network.model.NetworkUserRepos
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -33,8 +30,6 @@ internal class RetrofitNetwork @Inject constructor() : NetworkDataSource {
                 OkHttpClient.Builder()
                     .addInterceptor { chain ->
                         val newRequest = chain.request().newBuilder()
-                            // TODO: Token 위치 변경
-                            .addHeader("Authorization", "Bearer ${BuildConfig.GITHUB_ACCESS_TOKEN}")
                             .build()
                         chain.proceed(newRequest)
                     }
@@ -47,10 +42,10 @@ internal class RetrofitNetwork @Inject constructor() : NetworkDataSource {
             .create(NetworkApi::class.java)
 
     @OptIn(InternalSerializationApi::class)
-    override suspend fun user() = networkApi.user()
+    override suspend fun user(id: String) = networkApi.user(id)
 
     @OptIn(InternalSerializationApi::class)
-    override suspend fun useRepos() = networkApi.userRepo()
+    override suspend fun useRepos(id: String) = networkApi.userRepo(id)
 
     @OptIn(InternalSerializationApi::class)
     override suspend fun getUser(

@@ -156,7 +156,7 @@ private fun GitProfile(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = gitUser.email,
+                text = gitUser.login,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 18.sp
                 ),
@@ -242,7 +242,6 @@ private fun HomeLayoutPreview() {
             homeData = GitInfo(
                 gitUser = GitUser(
                     name = "Park",
-                    email = "park@test.com",
                     htmlUrl = "https://github.com/park",
                     avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4",
                     login = "pparkjae",

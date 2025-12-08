@@ -7,10 +7,10 @@ import kotlinx.serialization.InternalSerializationApi
 
 interface NetworkDataSource {
     @OptIn(InternalSerializationApi::class)
-    suspend fun user(): NetworkGitUser
+    suspend fun user(id: String): NetworkGitUser
 
     @OptIn(InternalSerializationApi::class)
-    suspend fun useRepos(): List<NetworkUserRepos>
+    suspend fun useRepos(id: String): List<NetworkUserRepos>
 
     @OptIn(InternalSerializationApi::class)
     suspend fun getUser(name: String, page: Int, itemCount: Int?): NetworkUserData
