@@ -11,6 +11,7 @@ data class NetworkUserRepos(
     @SerialName("node_id") val nodeId: String,
     @SerialName("name") val name: String,
     @SerialName("private") val private: Boolean,
+    @SerialName("created_at") val createdAt: String,
     @SerialName("owner") val owner: NetworkUserRepoOwner,
     @SerialName("html_url") val htmlUrl: String,
 )

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.Lock
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -134,7 +136,9 @@ private fun GitProfile(
         NetworkImageLayout(
             avatarUrl = gitUser.avatarUrl,
             contentDescription = "Profile of ${gitUser.name}",
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier
+                .size(80.dp)
+                .clip(RoundedCornerShape(18.dp))
         )
 
         Column(
@@ -268,6 +272,7 @@ private fun HomeLayoutPreview() {
                         htmlUrl = "url",
                         private = false,
                         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+                        createdAt = "2025-01-04T04:07:17Z",
                         owner = GitUserRepoOwner(
                             login = "pparkjae",
                             nodeId = "MDQ6VXNlcjIyNjU1MDc4"
@@ -279,6 +284,7 @@ private fun HomeLayoutPreview() {
                         htmlUrl = "url",
                         private = true,
                         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+                        createdAt = "2022-01-04T04:07:17Z",
                         owner = GitUserRepoOwner(
                             login = "pparkjae",
                             nodeId = "MDQ6VXNlcjIyNjU1MDc4"

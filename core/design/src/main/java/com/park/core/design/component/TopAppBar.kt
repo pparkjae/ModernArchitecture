@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 fun ModernTopAppBar(
     @StringRes titleRes: Int,
     modifier: Modifier = Modifier,
-    actionIcon: ImageVector,
-    actionIconContentDescription: String,
+    actionIcon: ImageVector? = null,
+    actionIconContentDescription: String? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     onActionClick: () -> Unit = {},
 ) {
@@ -28,12 +28,14 @@ fun ModernTopAppBar(
         modifier = modifier,
         title = { Text(text = stringResource(id = titleRes)) },
         actions = {
-            IconButton(onClick = onActionClick) {
-                Icon(
-                    imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+            if (actionIcon != null) {
+                IconButton(onClick = onActionClick) {
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = actionIconContentDescription,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
         },
         colors = colors,

@@ -33,6 +33,7 @@ val testRepos = listOf(
         htmlUrl = "url",
         private = false,
         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+        createdAt = "2025-01-04T04:07:17Z",
         owner = GitUserRepoOwner(
             login = "pparkjae",
             nodeId = "MDQ6VXNlcjIyNjU1MDc4"
@@ -44,6 +45,7 @@ val testRepos = listOf(
         htmlUrl = "url",
         private = true,
         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+        createdAt = "2022-01-04T04:07:17Z",
         owner = GitUserRepoOwner(
             login = "pparkjae",
             nodeId = "MDQ6VXNlcjIyNjU1MDc4"
@@ -57,6 +59,7 @@ val myRepo = GitUserRepos(
     htmlUrl = "url",
     private = false,
     nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+    createdAt = "2024-01-04T04:07:17Z",
     owner = GitUserRepoOwner(
         login = "pparkjae",
         nodeId = "MDQ6VXNlcjIyNjU1MDc4"
@@ -69,6 +72,7 @@ val notMyRepo = GitUserRepos(
     htmlUrl = "url",
     private = true,
     nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
+    createdAt = "2024-04-04T04:07:17Z",
     owner = GitUserRepoOwner(
         login = "pparkjae3",
         nodeId = "MDQ6VXNlcjIyNjU1MDc3"

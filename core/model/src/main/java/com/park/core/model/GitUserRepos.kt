@@ -6,6 +6,7 @@ data class GitUserRepos(
     val name: String,
     val private: Boolean,
     val htmlUrl: String,
+    val createdAt: String,
     val owner: GitUserRepoOwner
 )
 
