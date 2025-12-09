@@ -1,20 +1,10 @@
 package com.park.modernsample.ui
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout   .WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,13 +26,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.park.core.design.component.ModernTopAppBar
-import com.park.feature.home.navigation.Routes
 import com.park.feature.home.navigation.homeScreen
 import com.park.feature.search.navigation.searchScreen
 import com.park.modernsample.navigation.AppDestinations
@@ -50,23 +40,19 @@ import com.park.modernsample.navigation.AppDestinations
 @Composable
 fun ModernApp(
     modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
 ) {
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val navController = rememberNavController()
-
-    // 현재 라우트 감지
+    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
 
     ModernApp(
-        currentRoute = currentRoute,
+        currentDestination = currentDestination,
         snackbarHostState = snackbarHostState,
-        showSettingsDialog = showSettingsDialog,
         onTopAppBarActionClick = { showSettingsDialog = true },
-        onDismissDialog = { showSettingsDialog = false },
-        navController = navController
+        navController = navController,
+        modifier = modifier
     )
 }
 
@@ -75,100 +61,81 @@ fun ModernApp(
     ExperimentalComposeUiApi::class,
 )
 @Composable
-inline fun ModernApp(
-    currentRoute: String?,
+internal fun ModernApp(
+    currentDestination: NavDestination?,
     snackbarHostState: SnackbarHostState,
-    showSettingsDialog: Boolean,
     onTopAppBarActionClick: () -> Unit,
-    onDismissDialog: () -> Unit,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
     val windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo()
-    val layoutType = NavigationSuiteScaffoldDefaults
-        .calculateFromAdaptiveInfo(windowAdaptiveInfo)
-    val currentDestination = AppDestinations.entries.find { it.route == currentRoute }
+    val layoutType = NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(windowAdaptiveInfo)
+    val currentTopLevelDestination = AppDestinations.entries.find { destination ->
+        currentDestination?.hierarchy?.any { it.route == destination.route } == true
+    }
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             AppDestinations.entries.forEach { destination ->
+                val selected =
+                    currentDestination?.hierarchy?.any { it.route == destination.route } == true
+
                 item(
                     icon = {
                         Icon(
-                            destination.icon,
+                            imageVector = destination.icon,
                             contentDescription = stringResource(destination.contentDescription)
                         )
                     },
                     label = { Text(stringResource(destination.label)) },
-                    selected = destination.route == currentRoute,
+                    selected = selected,
                     onClick = {
-                        if (currentRoute != destination.route) {
-                            navController.navigate(destination.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+                        navController.navigate(destination.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
                             }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     }
                 )
             }
         },
         layoutType = layoutType,
+        modifier = modifier,
     ) {
         Scaffold(
-            modifier = modifier,
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            topBar = {
+                if (currentTopLevelDestination != null) {
+                    ModernTopAppBar(
+                        titleRes = currentTopLevelDestination.label,
+                        actionIcon = currentTopLevelDestination.topBarActionIcon,
+                        actionIconContentDescription = currentTopLevelDestination.topBarActionDescription?.let {
+                            stringResource(it)
+                        },
+                        onActionClick = onTopAppBarActionClick
+                    )
+                }
+            },
             snackbarHost = {
-                SnackbarHost(
-                    snackbarHostState,
-                    modifier = Modifier.windowInsetsPadding(
-                        WindowInsets.safeDrawing.exclude(
-                            WindowInsets.ime,
-                        ),
-                    ),
-                )
+                SnackbarHost(snackbarHostState)
             }
         ) { padding ->
-            Column(
+            Box(
                 Modifier
                     .fillMaxSize()
                     .padding(padding)
                     .consumeWindowInsets(padding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
-                        ),
-                    ),
             ) {
-                val test = "test"
-
-                currentDestination?.let {
-                    ModernTopAppBar(
-                        titleRes = it.label,
-                        actionIcon = it.icon,
-                        actionIconContentDescription = stringResource(it.contentDescription),
-                        onActionClick = {
-                            when (it.route) {
-                                Routes.HOME -> {
-
-                                }
-                            }
-                        }
-                    )
-                }
-
-                Box(Modifier.fillMaxSize()) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = AppDestinations.HOME.route,
-                    ) {
-                        homeScreen()
-                        searchScreen()
-                    }
+                NavHost(
+                    navController = navController,
+                    startDestination = AppDestinations.HOME.route,
+                ) {
+                    homeScreen()
+                    searchScreen()
                 }
             }
         }

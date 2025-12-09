@@ -1,6 +1,5 @@
 package com.park.feature.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.park.core.data.repository.UserRepository
@@ -28,7 +27,6 @@ class HomeScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val user: StateFlow<HomeUiState> = targetUserId
         .flatMapLatest { userId ->
-            Log.e("PARK", "${userId}")
             if (userId.isEmpty()) {
                 flowOf(HomeUiState.EmptyQuery)
             } else {
@@ -38,9 +36,11 @@ class HomeScreenViewModel @Inject constructor(
                 ) { user, repos ->
                     GitInfo(
                         gitUser = user,
-                        userRepos = repos.filter {
-                            it.owner.nodeId.equals(user.nodeId, true)
-                        },
+                        userRepos = repos
+                            .filter {
+                                it.owner.nodeId.equals(user.nodeId, true)
+                            }
+                            .sortedByDescending { it.createdAt },
                     )
                 }.map<GitInfo, HomeUiState> {
                     HomeUiState.Success(it)
@@ -48,7 +48,6 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
         .catch {
-            Log.e("PARK", "${it}")
             emit(HomeUiState.LoadFailed)
         }
         .stateIn(

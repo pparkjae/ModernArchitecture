@@ -11,6 +11,7 @@ fun NetworkUserRepos.asExternalModel() : GitUserRepos =
         name = name,
         private = private,
         htmlUrl = htmlUrl,
+        createdAt = createdAt,
         owner = GitUserRepoOwner(
             login = owner.login,
             nodeId = owner.nodeId

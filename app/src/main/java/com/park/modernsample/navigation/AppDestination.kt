@@ -15,12 +15,16 @@ enum class AppDestinations(
     @StringRes val label: Int,
     val icon: ImageVector,
     @StringRes val contentDescription: Int,
+    val topBarActionIcon: ImageVector? = null,
+    @StringRes val topBarActionDescription: Int? = null
 ) {
     HOME(
         route = HomeRoutes.HOME,
         label = HomeR.string.feature_home_title,
         icon = Icons.Rounded.Home,
-        contentDescription = HomeR.string.feature_home_title
+        contentDescription = HomeR.string.feature_home_title,
+        topBarActionIcon = Icons.Rounded.Search,
+        topBarActionDescription = SearchR.string.feature_search_title
     ),
     SEARCH(
         route = SearchRoutes.SEARCH,
