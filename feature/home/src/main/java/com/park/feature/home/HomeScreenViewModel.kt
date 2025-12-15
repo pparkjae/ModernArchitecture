@@ -22,7 +22,11 @@ class HomeScreenViewModel @Inject constructor(
     userRepository: UserRepository
 ) : ViewModel() {
 
-    private val targetUserId = MutableStateFlow("pparkjae")
+    private val targetUserId = MutableStateFlow("")
+
+    fun updateSearchQuery(query: String) {
+        targetUserId.value = query
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val user: StateFlow<HomeUiState> = targetUserId
@@ -44,11 +48,10 @@ class HomeScreenViewModel @Inject constructor(
                     )
                 }.map<GitInfo, HomeUiState> {
                     HomeUiState.Success(it)
+                }.catch {
+                    emit(HomeUiState.LoadFailed)
                 }
             }
-        }
-        .catch {
-            emit(HomeUiState.LoadFailed)
         }
         .stateIn(
             scope = viewModelScope,

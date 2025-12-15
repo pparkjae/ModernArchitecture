@@ -1,5 +1,7 @@
 package com.park.modernsample.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -28,11 +30,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.park.core.design.component.ModernTopAppBar
+import com.park.core.design.component.SearchTopAppBar
 import com.park.feature.home.navigation.homeScreen
 import com.park.feature.search.navigation.searchScreen
 import com.park.modernsample.navigation.AppDestinations
@@ -42,15 +46,34 @@ fun ModernApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    // TODO: ModernAppState 분리 필요
     val snackbarHostState = remember { SnackbarHostState() }
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var isSearchActive by rememberSaveable { mutableStateOf(false) }
+    var searchKeyWord by rememberSaveable { mutableStateOf("") }
+    var submitKeyWord by rememberSaveable { mutableStateOf("pparkjae") }
+
+    BackHandler(enabled = isSearchActive) {
+        isSearchActive = false
+        searchKeyWord = ""
+    }
 
     ModernApp(
+        isSearchActive = isSearchActive,
+        searchKeyWord = searchKeyWord,
+        submitKeyWord = submitKeyWord,
+        onSearchKeyWordChange = {
+            searchKeyWord = it
+        },
+        onSearchActiveChange = {
+            isSearchActive = it
+        },
+        onSearchAction = {
+            submitKeyWord = searchKeyWord
+        },
         currentDestination = currentDestination,
         snackbarHostState = snackbarHostState,
-        onTopAppBarActionClick = { showSettingsDialog = true },
         navController = navController,
         modifier = modifier
     )
@@ -62,9 +85,14 @@ fun ModernApp(
 )
 @Composable
 internal fun ModernApp(
+    isSearchActive: Boolean,
+    searchKeyWord: String,
+    submitKeyWord: String,
+    onSearchKeyWordChange: (String) -> Unit,
+    onSearchActiveChange: (Boolean) -> Unit,
+    onSearchAction: () -> Unit,
     currentDestination: NavDestination?,
     snackbarHostState: SnackbarHostState,
-    onTopAppBarActionClick: () -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
@@ -91,7 +119,7 @@ internal fun ModernApp(
                     selected = selected,
                     onClick = {
                         navController.navigate(destination.route) {
-                            popUpTo(navController.graph.startDestinationId) {
+                            popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                             launchSingleTop = true
@@ -109,16 +137,14 @@ internal fun ModernApp(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
             topBar = {
-                if (currentTopLevelDestination != null) {
-                    ModernTopAppBar(
-                        titleRes = currentTopLevelDestination.label,
-                        actionIcon = currentTopLevelDestination.topBarActionIcon,
-                        actionIconContentDescription = currentTopLevelDestination.topBarActionDescription?.let {
-                            stringResource(it)
-                        },
-                        onActionClick = onTopAppBarActionClick
-                    )
-                }
+                ModernAppTopBar(
+                    currentTopLevelDestination = currentTopLevelDestination,
+                    isSearchActive = isSearchActive,
+                    searchKeyWord = searchKeyWord,
+                    onSearchKeyWordChange = onSearchKeyWordChange,
+                    onSearchActiveChange = onSearchActiveChange,
+                    onSearchAction = onSearchAction
+                )
             },
             snackbarHost = {
                 SnackbarHost(snackbarHostState)
@@ -134,9 +160,53 @@ internal fun ModernApp(
                     navController = navController,
                     startDestination = AppDestinations.HOME.route,
                 ) {
-                    homeScreen()
+                    homeScreen(submitKeyWord)
                     searchScreen()
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModernAppTopBar(
+    currentTopLevelDestination: AppDestinations?,
+    isSearchActive: Boolean,
+    searchKeyWord: String,
+    onSearchKeyWordChange: (String) -> Unit,
+    onSearchActiveChange: (Boolean) -> Unit,
+    onSearchAction: () -> Unit
+) {
+    AnimatedContent(
+        targetState = isSearchActive,
+        label = "TopBarAnimation"
+    ) { searchMode ->
+        if (searchMode) {
+            SearchTopAppBar(
+                searchKeyWord = searchKeyWord,
+                onSearchKeyWordChange = onSearchKeyWordChange,
+                onBackClick = {
+                    onSearchActiveChange(false)
+                    onSearchKeyWordChange("")
+                },
+                onClearClick = { onSearchKeyWordChange("") },
+                onSearchAction = {
+                    onSearchAction()
+                }
+            )
+        } else {
+            if (currentTopLevelDestination != null) {
+                ModernTopAppBar(
+                    titleRes = currentTopLevelDestination.label,
+                    actionIcon = currentTopLevelDestination.topBarActionIcon,
+                    onActionClick = {
+                        when (currentTopLevelDestination) {
+                            AppDestinations.HOME -> onSearchActiveChange(true)
+                            else -> {}
+                        }
+                    }
+                )
             }
         }
     }
