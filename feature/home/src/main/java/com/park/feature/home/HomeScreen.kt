@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +48,14 @@ import com.park.core.model.GitUserRepos
 
 @Composable
 internal fun HomeRoute(
+    submitKeyWord: String,
     modifier: Modifier = Modifier,
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(submitKeyWord) {
+        viewModel.updateSearchQuery(submitKeyWord)
+    }
+
     val user by viewModel.user.collectAsStateWithLifecycle()
 
     HomeScreen(
