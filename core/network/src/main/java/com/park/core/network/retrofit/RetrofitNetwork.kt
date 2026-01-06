@@ -2,8 +2,7 @@ package com.park.core.network.retrofit
 
 import com.park.core.network.NetworkDataSource
 import com.park.core.network.api.NetworkApi
-import com.park.core.network.model.NetworkUserData
-import kotlinx.serialization.InternalSerializationApi
+import com.park.core.network.model.NetworkGitSearchRepo
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -14,10 +13,6 @@ import javax.inject.Singleton
 
 @Singleton
 internal class RetrofitNetwork @Inject constructor() : NetworkDataSource {
-
-    companion object {
-        private const val DEFAULT_ITEM_COUNT = 30
-    }
 
     val json: Json = Json {
         ignoreUnknownKeys = true
@@ -41,16 +36,17 @@ internal class RetrofitNetwork @Inject constructor() : NetworkDataSource {
             .build()
             .create(NetworkApi::class.java)
 
-    @OptIn(InternalSerializationApi::class)
     override suspend fun user(id: String) = networkApi.user(id)
 
-    @OptIn(InternalSerializationApi::class)
     override suspend fun useRepos(id: String) = networkApi.userRepo(id)
 
-    @OptIn(InternalSerializationApi::class)
-    override suspend fun getUser(
-        name: String,
+    override suspend fun searchRepos(
+        query: String,
         page: Int,
-        itemCount: Int?
-    ): NetworkUserData = networkApi.getUser(name, page, itemCount ?: DEFAULT_ITEM_COUNT)
+        perPage: Int
+    ): NetworkGitSearchRepo = networkApi.searchRepositories(
+        query = query,
+        page = page,
+        perPage = perPage
+    )
 }

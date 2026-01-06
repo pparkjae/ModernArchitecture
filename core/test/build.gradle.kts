@@ -37,4 +37,5 @@ dependencies {
     api(libs.androidx.ui.test.manifest)
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.ui.tooling)
+    api(libs.androidx.paging.common)
 }

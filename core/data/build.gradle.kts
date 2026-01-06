@@ -31,4 +31,5 @@ dependencies {
     api(projects.core.network)
 
     implementation(libs.hilt.android)
+    implementation(libs.androidx.paging.compose)
 }

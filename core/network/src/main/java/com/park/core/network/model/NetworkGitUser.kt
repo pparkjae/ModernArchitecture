@@ -1,10 +1,10 @@
 package com.park.core.network.model
 
-import kotlinx.serialization.InternalSerializationApi
+import android.annotation.SuppressLint
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@InternalSerializationApi
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class NetworkGitUser(
     @SerialName("login") val login: String,

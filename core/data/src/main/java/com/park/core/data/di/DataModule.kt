@@ -1,6 +1,8 @@
 package com.park.core.data.di
 
+import com.park.core.data.repository.GithubSearchRepository
 import com.park.core.data.repository.GithubUserRepository
+import com.park.core.data.repository.SearchRepository
 import com.park.core.data.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,9 @@ abstract class DataModule {
     internal abstract fun bindUserRepository(
         userRepository: GithubUserRepository,
     ): UserRepository
+
+    @Binds
+    internal abstract fun bindSearchRepository(
+        searchRepository: GithubSearchRepository,
+    ): SearchRepository
 }
