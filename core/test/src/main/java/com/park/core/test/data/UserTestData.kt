@@ -1,8 +1,9 @@
 package com.park.core.test.data
 
 import com.park.core.model.GitUser
+import com.park.core.model.GitUserInfo
 import com.park.core.model.GitUserRepoOwner
-import com.park.core.model.GitUserRepos
+import com.park.core.model.GitUserRepo
 
 val testUser = GitUser(
     name = "Park",
@@ -27,54 +28,87 @@ val testUser = GitUser(
 )
 
 val testRepos = listOf(
-    GitUserRepos(
+    GitUserRepo(
         id = 1,
         name = "Android-App",
+        fullName = "open-android",
         htmlUrl = "url",
+        description = "GitHub",
         private = false,
         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
         createdAt = "2025-01-04T04:07:17Z",
+        language = "kotlin",
+        pushedAt = "2025-12-22T04:07:17Z",
+        stargazersCount = 3400,
+        topics = listOf("java", "kotlin"),
         owner = GitUserRepoOwner(
             login = "pparkjae",
-            nodeId = "MDQ6VXNlcjIyNjU1MDc4"
+            nodeId = "MDQ6VXNlcjIyNjU1MDc4",
+            avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4"
         )
     ),
-    GitUserRepos(
+    GitUserRepo(
         id = 2,
         name = "Compose-App",
+        fullName = "open-compose",
         htmlUrl = "url",
+        description = "GitHub",
         private = true,
         nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
         createdAt = "2022-01-04T04:07:17Z",
+        language = "java",
+        pushedAt = "2025-12-21T04:07:17Z",
+        stargazersCount = 3400,
+        topics = listOf("java", "kotlin"),
         owner = GitUserRepoOwner(
             login = "pparkjae",
-            nodeId = "MDQ6VXNlcjIyNjU1MDc4"
+            nodeId = "MDQ6VXNlcjIyNjU1MDc4",
+            avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4"
         )
     )
 )
 
-val myRepo = GitUserRepos(
+val myRepo = GitUserRepo(
     id = 1,
     name = "Android-App",
+    fullName = "open-android/Android",
     htmlUrl = "url",
+    description = "GitHub",
     private = false,
     nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
     createdAt = "2024-01-04T04:07:17Z",
+    language = "java",
+    pushedAt = "2025-12-21T04:07:17Z",
+    stargazersCount = 3400,
+    topics = listOf("java", "kotlin"),
     owner = GitUserRepoOwner(
         login = "pparkjae",
-        nodeId = "MDQ6VXNlcjIyNjU1MDc4"
+        nodeId = "MDQ6VXNlcjIyNjU1MDc4",
+        avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4"
     )
 )
 
-val notMyRepo = GitUserRepos(
+val notMyRepo = GitUserRepo(
     id = 2,
     name = "Compose-App",
+    fullName = "open-compose",
     htmlUrl = "url",
+    description = "GitHub",
     private = true,
     nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
     createdAt = "2024-04-04T04:07:17Z",
+    language = "kotlin",
+    pushedAt = "2025-12-23T04:07:17Z",
+    stargazersCount = 3000,
+    topics = listOf("java", "kotlin"),
     owner = GitUserRepoOwner(
         login = "pparkjae3",
-        nodeId = "MDQ6VXNlcjIyNjU1MDc3"
+        nodeId = "MDQ6VXNlcjIyNjU1MDc3",
+        avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=3"
     )
+)
+
+val testGitUserInfo = GitUserInfo(
+    gitUser = testUser,
+    userRepos = testRepos
 )

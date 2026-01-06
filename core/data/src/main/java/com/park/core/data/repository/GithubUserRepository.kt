@@ -2,7 +2,7 @@ package com.park.core.data.repository
 
 import com.park.core.data.model.asExternalModel
 import com.park.core.model.GitUser
-import com.park.core.model.GitUserRepos
+import com.park.core.model.GitUserRepo
 import com.park.core.network.NetworkDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +17,7 @@ internal class GithubUserRepository @Inject constructor(
         emit(networkDataSource.user(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 
-    override fun userRepos(id: String): Flow<List<GitUserRepos>> = flow {
+    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
         emit(networkDataSource.useRepos(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 }

@@ -1,17 +1,21 @@
 package com.park.core.network
 
+import com.park.core.network.model.NetworkGitRepo
 import com.park.core.network.model.NetworkGitUser
-import com.park.core.network.model.NetworkUserData
-import com.park.core.network.model.NetworkUserRepos
-import kotlinx.serialization.InternalSerializationApi
+import com.park.core.network.model.NetworkGitSearchRepo
 
 interface NetworkDataSource {
-    @OptIn(InternalSerializationApi::class)
+    companion object {
+        const val DEFAULT_ITEM_COUNT = 30
+    }
+
     suspend fun user(id: String): NetworkGitUser
 
-    @OptIn(InternalSerializationApi::class)
-    suspend fun useRepos(id: String): List<NetworkUserRepos>
+    suspend fun useRepos(id: String): List<NetworkGitRepo>
 
-    @OptIn(InternalSerializationApi::class)
-    suspend fun getUser(name: String, page: Int, itemCount: Int?): NetworkUserData
+    suspend fun searchRepos(
+        query: String,
+        page: Int = 1,
+        perPage: Int = DEFAULT_ITEM_COUNT
+    ): NetworkGitSearchRepo
 }

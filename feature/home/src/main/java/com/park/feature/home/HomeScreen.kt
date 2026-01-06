@@ -41,10 +41,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.park.core.design.component.LoadingLayout
 import com.park.core.design.component.NetworkImageLayout
-import com.park.core.model.GitInfo
 import com.park.core.model.GitUser
-import com.park.core.model.GitUserRepoOwner
-import com.park.core.model.GitUserRepos
+import com.park.core.model.GitUserInfo
+import com.park.core.model.GitUserRepo
+import com.park.core.test.data.testGitUserInfo
 
 @Composable
 internal fun HomeRoute(
@@ -53,7 +53,7 @@ internal fun HomeRoute(
     viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(submitKeyWord) {
-        viewModel.updateSearchQuery(submitKeyWord)
+        viewModel.searchGitUser(submitKeyWord)
     }
 
     val user by viewModel.user.collectAsStateWithLifecycle()
@@ -73,19 +73,26 @@ internal fun HomeScreen(
         when (homeUiState) {
             HomeUiState.Loading -> LoadingLayout(Modifier.align(Alignment.Center))
             is HomeUiState.Success -> HomeLayout(
-                homeData = homeUiState.gitInfo,
+                gitUserInfo = homeUiState.gitUserInfo,
                 onRepoClick = { /* Handle click */ },
                 modifier = Modifier.fillMaxSize()
             )
-            HomeUiState.LoadFailed -> Text("Error Loading Data", Modifier.align(Alignment.Center).testTag("error"))
-            HomeUiState.EmptyQuery -> Text("Search for a user", Modifier.align(Alignment.Center))
+
+            HomeUiState.LoadFailed -> Text(
+                "Error Loading Data",
+                Modifier
+                    .align(Alignment.Center)
+                    .testTag("error")
+            )
+
+            HomeUiState.EmptyResult -> Text("Search for a user", Modifier.align(Alignment.Center))
         }
     }
 }
 
 @Composable
 private fun HomeLayout(
-    homeData: GitInfo,
+    gitUserInfo: GitUserInfo,
     onRepoClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -93,7 +100,7 @@ private fun HomeLayout(
         modifier = modifier.fillMaxSize()
     ) {
         GitProfile(
-            gitUser = homeData.gitUser,
+            gitUser = gitUserInfo.gitUser,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -109,7 +116,7 @@ private fun HomeLayout(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Repositories (${homeData.userRepos.size})",
+            text = "Repositories (${gitUserInfo.userRepos.size})",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -123,7 +130,7 @@ private fun HomeLayout(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             repoListSection(
-                repos = homeData.userRepos,
+                repos = gitUserInfo.userRepos,
                 onClick = onRepoClick
             )
         }
@@ -189,7 +196,7 @@ private fun GitProfile(
 }
 
 private fun LazyListScope.repoListSection(
-    repos:  List<GitUserRepos>,
+    repos: List<GitUserRepo>,
     onClick: (String) -> Unit
 ) {
     items(repos, key = { it.id }) { repo ->
@@ -199,12 +206,12 @@ private fun LazyListScope.repoListSection(
 
 @Composable
 private fun RepoItem(
-    gitUserRepos: GitUserRepos,
+    gitUserRepo: GitUserRepo,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = { onClick(gitUserRepos.htmlUrl) },
+        onClick = { onClick(gitUserRepo.htmlUrl) },
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
@@ -218,8 +225,8 @@ private fun RepoItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (gitUserRepos.private) Icons.Rounded.Lock else Icons.Rounded.Face,
-                contentDescription = if (gitUserRepos.private) "Private Repository" else "Public Repository",
+                imageVector = if (gitUserRepo.private) Icons.Rounded.Lock else Icons.Rounded.Face,
+                contentDescription = if (gitUserRepo.private) "Private Repository" else "Public Repository",
                 tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(24.dp)
             )
@@ -228,12 +235,12 @@ private fun RepoItem(
 
             Column {
                 Text(
-                    text = gitUserRepos.name,
+                    text = gitUserRepo.name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = gitUserRepos.htmlUrl,
+                    text = gitUserRepo.htmlUrl,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
@@ -247,60 +254,10 @@ private fun RepoItem(
 @Preview(showBackground = true)
 @Composable
 private fun HomeLayoutPreview() {
-    MaterialTheme {
-        HomeLayout(
-            homeData = GitInfo(
-                gitUser = GitUser(
-                    name = "Park",
-                    htmlUrl = "https://github.com/park",
-                    avatarUrl = "https://avatars.githubusercontent.com/u/22655078?v=4",
-                    login = "pparkjae",
-                    id = 22655078,
-                    nodeId = "MDQ6VXNlcjIyNjU1MDc4",
-                    gravatarId = "",
-                    url = "https://api.github.com/users/pparkjae",
-                    followersUrl = "https://api.github.com/users/pparkjae/followers",
-                    gistsUrl = "https://api.github.com/users/pparkjae/gists{/gist_id}",
-                    starredUrl = "https://api.github.com/users/pparkjae/starred{/owner}{/repo}",
-                    subscriptionsUrl = "https://api.github.com/users/pparkjae/subscriptions",
-                    organizationsUrl = "https://api.github.com/users/pparkjae/orgs",
-                    reposUrl = "https://api.github.com/users/pparkjae/repos",
-                    eventsUrl = "https://api.github.com/users/pparkjae/events{/privacy}",
-                    receivedEventsUrl = "https://api.github.com/users/pparkjae/received_events",
-                    type = "User",
-                    userViewType = "public",
-                    siteAdmin = false
-                ),
-                userRepos = listOf(
-                    GitUserRepos(
-                        id = 1,
-                        name = "Android-App",
-                        htmlUrl = "url",
-                        private = false,
-                        nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
-                        createdAt = "2025-01-04T04:07:17Z",
-                        owner = GitUserRepoOwner(
-                            login = "pparkjae",
-                            nodeId = "MDQ6VXNlcjIyNjU1MDc4"
-                        )
-                    ),
-                    GitUserRepos(
-                        id = 2,
-                        name = "Compose-App",
-                        htmlUrl = "url",
-                        private = true,
-                        nodeId = "MDEwOlJlcG9zaXRvcnkzODA5MjQzNzg=",
-                        createdAt = "2022-01-04T04:07:17Z",
-                        owner = GitUserRepoOwner(
-                            login = "pparkjae",
-                            nodeId = "MDQ6VXNlcjIyNjU1MDc4"
-                        )
-                    ),
-                )
-            ),
-            onRepoClick = {}
-        )
-    }
+    HomeLayout(
+        gitUserInfo = testGitUserInfo,
+        onRepoClick = {}
+    )
 }
 
 @Preview(showBackground = true)

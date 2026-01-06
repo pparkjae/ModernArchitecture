@@ -8,8 +8,8 @@
 root
 ├── app                 # 최종 애플리케이션 모듈 (의존성 그래프의 최상위)
 ├── feature             # 사용자에게 보이는 화면 및 기능 단위 (독립적 실행 가능 지향)
-│   ├── home            # 홈 화면 (UI + ViewModel + Tests)
-│   ├── search          # 검색 화면
+│   ├── home            # Git User 정보 화면 (UI + ViewModel + Tests)
+│   ├── search          # Git Repository 검색 화면 (UI + ViewModel + Tests)
 │   └── ...
 └── core                # 앱 전반에서 공유되는 공통 로직 및 인프라
     ├── model           # 도메인 모델 (Pure Kotlin)
@@ -44,5 +44,6 @@ DI: Hilt
 Async: Coroutines & Flow
 Network: Retrofit2 & OkHttp
 Image Loader: Coil
+List : Compose-paging
 ```
 

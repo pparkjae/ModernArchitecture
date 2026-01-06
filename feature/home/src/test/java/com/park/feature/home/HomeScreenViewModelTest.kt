@@ -9,7 +9,6 @@ import com.park.core.test.repository.TestGithubUserRepository
 import com.park.core.test.util.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-
 import org.junit.Assert.*
 import org.junit.Rule
 
@@ -27,6 +26,8 @@ class HomeScreenViewModelTest {
 
     @Test
     fun user_success() = runTest {
+        viewModel.searchGitUser("PParkjae")
+
         viewModel.user.test {
             assertEquals(HomeUiState.Loading, awaitItem())
 
@@ -35,16 +36,17 @@ class HomeScreenViewModelTest {
 
             val successState = awaitItem() as HomeUiState.Success
 
-            assertEquals(1, successState.gitInfo.userRepos.size)
+            assertEquals(1, successState.gitUserInfo.userRepos.size)
             assertEquals(
-                successState.gitInfo.gitUser.nodeId,
-                successState.gitInfo.userRepos[0].owner.nodeId
+                successState.gitUserInfo.gitUser.nodeId,
+                successState.gitUserInfo.userRepos[0].owner.nodeId
             )
         }
     }
 
     @Test
     fun user_failed() = runTest {
+        viewModel.searchGitUser("PParkjae")
         userRepository.setShouldThrowError(true)
 
         viewModel.user.test {
@@ -54,7 +56,6 @@ class HomeScreenViewModelTest {
                 GitUser(
                     name = "Test",
                     nodeId = "1",
-                    email = "",
                     htmlUrl = "",
                     avatarUrl = "",
                     login = "",

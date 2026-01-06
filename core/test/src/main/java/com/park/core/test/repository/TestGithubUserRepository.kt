@@ -2,7 +2,7 @@ package com.park.core.test.repository
 
 import com.park.core.data.repository.UserRepository
 import com.park.core.model.GitUser
-import com.park.core.model.GitUserRepos
+import com.park.core.model.GitUserRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 class TestGithubUserRepository : UserRepository {
 
     private val userFlow = MutableSharedFlow<GitUser>(replay = 1)
-    private val reposFlow = MutableSharedFlow<List<GitUserRepos>>(replay = 1)
+    private val reposFlow = MutableSharedFlow<List<GitUserRepo>>(replay = 1)
     private var shouldThrowError = false
 
     override fun user(id: String): Flow<GitUser> = flow {
@@ -18,7 +18,7 @@ class TestGithubUserRepository : UserRepository {
         userFlow.collect { emit(it) }
     }
 
-    override fun userRepos(id: String): Flow<List<GitUserRepos>> = flow {
+    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
         if (shouldThrowError) throw Exception("Test Error")
         reposFlow.collect { emit(it) }
     }
@@ -27,7 +27,7 @@ class TestGithubUserRepository : UserRepository {
         userFlow.emit(user)
     }
 
-    suspend fun emitRepos(repos: List<GitUserRepos>) {
+    suspend fun emitRepos(repos: List<GitUserRepo>) {
         reposFlow.emit(repos)
     }
 

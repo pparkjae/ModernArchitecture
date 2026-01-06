@@ -3,7 +3,7 @@ package com.park.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.park.core.data.repository.UserRepository
-import com.park.core.model.GitInfo
+import com.park.core.model.GitUserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -22,23 +23,23 @@ class HomeScreenViewModel @Inject constructor(
     userRepository: UserRepository
 ) : ViewModel() {
 
-    private val targetUserId = MutableStateFlow("")
+    private val gitUserId = MutableStateFlow("")
 
-    fun updateSearchQuery(query: String) {
-        targetUserId.value = query
+    fun searchGitUser(gitId: String) {
+        gitUserId.value = gitId
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<HomeUiState> = targetUserId
+    val user: StateFlow<HomeUiState> = gitUserId
         .flatMapLatest { userId ->
             if (userId.isEmpty()) {
-                flowOf(HomeUiState.EmptyQuery)
+                flowOf(HomeUiState.EmptyResult)
             } else {
                 combine(
                     userRepository.user(userId),
                     userRepository.userRepos(userId)
                 ) { user, repos ->
-                    GitInfo(
+                    GitUserInfo(
                         gitUser = user,
                         userRepos = repos
                             .filter {
@@ -46,14 +47,15 @@ class HomeScreenViewModel @Inject constructor(
                             }
                             .sortedByDescending { it.createdAt },
                     )
-                }.map<GitInfo, HomeUiState> {
+                }.map<GitUserInfo, HomeUiState> {
                     HomeUiState.Success(it)
+                }.onStart {
+                    emit(HomeUiState.Loading)
                 }.catch {
                     emit(HomeUiState.LoadFailed)
                 }
             }
-        }
-        .stateIn(
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeUiState.Loading,

@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.park.core.model.GitInfo
+import com.park.core.model.GitUserInfo
 import com.park.core.test.data.testRepos
 import com.park.core.test.data.testUser
 import org.junit.Rule
@@ -20,7 +20,7 @@ class HomeScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-    private val testHomeData = GitInfo(
+    private val testHomeData = GitUserInfo(
         gitUser = testUser,
         userRepos = testRepos
     )
@@ -49,7 +49,7 @@ class HomeScreenTest {
         }
 
         composeTestRule.onNodeWithText(testUser.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(testUser.email).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testUser.htmlUrl).assertIsDisplayed()
         composeTestRule.onNodeWithText("Repositories (${testRepos.size})").assertIsDisplayed()
         composeTestRule.onNodeWithText(testRepos[0].name).assertIsDisplayed()
         composeTestRule.onNodeWithText(testRepos[1].name).assertIsDisplayed()
