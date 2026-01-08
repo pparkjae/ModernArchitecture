@@ -1,7 +1,7 @@
 package com.park.feature.search
 
 import app.cash.turbine.test
-import com.park.core.test.data.testRepos
+import com.park.core.test.data.testRepo
 import com.park.core.test.repository.TestGithubSearchRepository
 import com.park.core.test.util.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
@@ -27,7 +27,7 @@ class SearchScreenViewModelTest {
 
             assertEquals(searchKeyword, viewModel.searchRepositoryKeyword.value)
 
-            searchRepository.emit(testRepos)
+            searchRepository.emit(testRepo)
 
             val pagingData = awaitItem()
             assertNotNull(pagingData)

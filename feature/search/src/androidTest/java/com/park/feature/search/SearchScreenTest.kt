@@ -14,7 +14,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.park.core.model.GitUserRepo
-import com.park.core.test.data.testRepos
+import com.park.core.test.data.testRepo
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -45,7 +45,7 @@ class SearchScreenTest {
 
     @Test
     fun searchScreen_withData_showsList() {
-        val dummyPagingFlow = flowOf(PagingData.from(testRepos))
+        val dummyPagingFlow = flowOf(PagingData.from(testRepo))
 
         composeTestRule.setContent {
             val items = dummyPagingFlow.collectAsLazyPagingItems()

@@ -8,7 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.park.core.model.GitUserInfo
-import com.park.core.test.data.testRepos
+import com.park.core.test.data.testRepo
 import com.park.core.test.data.testUser
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +22,7 @@ class HomeScreenTest {
 
     private val testHomeData = GitUserInfo(
         gitUser = testUser,
-        userRepos = testRepos
+        userRepo = testRepo
     )
 
     @Test
@@ -50,9 +50,9 @@ class HomeScreenTest {
 
         composeTestRule.onNodeWithText(testUser.name).assertIsDisplayed()
         composeTestRule.onNodeWithText(testUser.htmlUrl).assertIsDisplayed()
-        composeTestRule.onNodeWithText("Repositories (${testRepos.size})").assertIsDisplayed()
-        composeTestRule.onNodeWithText(testRepos[0].name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(testRepos[1].name).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Repositories (${testRepo.size})").assertIsDisplayed()
+        composeTestRule.onNodeWithText(testRepo[0].name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testRepo[1].name).assertIsDisplayed()
 
         composeTestRule.onNodeWithContentDescription("Public Repository").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Private Repository").assertIsDisplayed()

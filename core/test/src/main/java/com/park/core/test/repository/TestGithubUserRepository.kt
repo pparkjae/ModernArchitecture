@@ -18,7 +18,7 @@ class TestGithubUserRepository : UserRepository {
         userFlow.collect { emit(it) }
     }
 
-    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
+    override fun userRepo(id: String): Flow<List<GitUserRepo>> = flow {
         if (shouldThrowError) throw Exception("Test Error")
         reposFlow.collect { emit(it) }
     }

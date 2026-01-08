@@ -37,11 +37,11 @@ class HomeScreenViewModel @Inject constructor(
             } else {
                 combine(
                     userRepository.user(userId),
-                    userRepository.userRepos(userId)
+                    userRepository.userRepo(userId)
                 ) { user, repos ->
                     GitUserInfo(
                         gitUser = user,
-                        userRepos = repos
+                        userRepo = repos
                             .filter {
                                 it.owner.nodeId.equals(user.nodeId, true)
                             }

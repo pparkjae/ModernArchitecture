@@ -67,7 +67,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.park.core.design.component.NetworkImageLayout
 import com.park.core.model.GitUserRepo
-import com.park.core.test.data.testRepos
+import com.park.core.test.data.testRepo
 import kotlinx.coroutines.flow.flowOf
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -442,10 +442,9 @@ private fun SearchScreenEmptyPreview() {
 private fun SearchScreenResultPreview() {
     MaterialTheme {
         RepoItem(
-            gitUserRepo = testRepos[0],
-            {
+            gitUserRepo = testRepo[0]
+        ) {
 
-            }
-        )
+        }
     }
 }

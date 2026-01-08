@@ -36,10 +36,10 @@ class HomeScreenViewModelTest {
 
             val successState = awaitItem() as HomeUiState.Success
 
-            assertEquals(1, successState.gitUserInfo.userRepos.size)
+            assertEquals(1, successState.gitUserInfo.userRepo.size)
             assertEquals(
                 successState.gitUserInfo.gitUser.nodeId,
-                successState.gitUserInfo.userRepos[0].owner.nodeId
+                successState.gitUserInfo.userRepo[0].owner.nodeId
             )
         }
     }

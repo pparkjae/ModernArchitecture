@@ -17,7 +17,7 @@ internal class GithubUserRepository @Inject constructor(
         emit(networkDataSource.user(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 
-    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
+    override fun userRepo(id: String): Flow<List<GitUserRepo>> = flow {
         emit(networkDataSource.useRepos(id).asExternalModel())
     }.flowOn(Dispatchers.IO)
 }

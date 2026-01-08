@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     fun user(id: String): Flow<GitUser>
 
-    fun userRepos(id: String): Flow<List<GitUserRepo>>
+    fun userRepo(id: String): Flow<List<GitUserRepo>>
 }
