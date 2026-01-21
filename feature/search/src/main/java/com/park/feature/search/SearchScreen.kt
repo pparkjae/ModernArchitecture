@@ -65,18 +65,13 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.park.core.design.component.CommonDialog
 import com.park.core.design.component.NetworkImageLayout
 import com.park.core.model.GitUserRepo
-import com.park.core.test.data.testRepos
+import com.park.core.test.data.testRepo
+import com.park.feature.search.util.toDateText
 import kotlinx.coroutines.flow.flowOf
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
 
-private val repoDateFormatter =
-    SimpleDateFormat("yyyy년 M월 d일", Locale.KOREA).apply {
-        timeZone = TimeZone.getDefault()
-    }
 
 @Composable
 internal fun SearchRoute(
@@ -85,14 +80,29 @@ internal fun SearchRoute(
 ) {
     val searchResults = viewModel.pagingDataFlow.collectAsLazyPagingItems()
     val searchRepositoryKeyword by viewModel.searchRepositoryKeyword.collectAsStateWithLifecycle()
+    var selectedRepo by remember { mutableStateOf<GitUserRepo?>(null) }
 
     SearchScreen(
         modifier = modifier,
         searchKeyWord = searchRepositoryKeyword,
         searchResults = searchResults,
+        selectedRepo = selectedRepo,
+        onDialogConfirm = {
+            selectedRepo?.let {
+                if (it.isBookmarked) {
+                    viewModel.removeBookmark(it.id)
+                } else {
+                    viewModel.addBookmark(it)
+                }
+            }
+            selectedRepo = null
+        },
+        onDialogDismiss = {
+            selectedRepo = null
+        },
         onSearchClick = viewModel::search,
-        onItemClick = {
-
+        onItemClick = { item ->
+            selectedRepo = item
         }
     )
 }
@@ -103,11 +113,23 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     searchKeyWord: String,
     searchResults: LazyPagingItems<GitUserRepo>,
+    selectedRepo: GitUserRepo?,
+    onDialogConfirm: () -> Unit,
+    onDialogDismiss: () -> Unit,
     onSearchClick: (String) -> Unit,
-    onItemClick: (String) -> Unit
+    onItemClick: (GitUserRepo) -> Unit
 ) {
     var inputText by rememberSaveable { mutableStateOf(searchKeyWord) }
     val focusManager = LocalFocusManager.current
+
+    if (selectedRepo != null) {
+        CommonDialog(
+            title = "즐겨찾기",
+            content = if (selectedRepo.isBookmarked) "Repository를 즐겨찾기에 제거하시겠습니까?" else "Repository를 즐겨찾기에 추가하시겠습니까?",
+            onConfirm = { onDialogConfirm() },
+            onDismiss = { onDialogDismiss() }
+        )
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -184,7 +206,7 @@ fun SearchInputField(
 fun RepoPagingList(
     modifier: Modifier = Modifier,
     pagingItems: LazyPagingItems<GitUserRepo>,
-    onItemClick: (String) -> Unit
+    onItemClick: (GitUserRepo) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -198,11 +220,12 @@ fun RepoPagingList(
         ) { index ->
             val repo = pagingItems[index]
             if (repo != null) {
-                RepoItem(gitUserRepo = repo, onClick = { onItemClick(repo.htmlUrl) })
+                RepoItem(gitUserRepo = repo, onClick = { onItemClick(repo) })
             }
         }
 
         val loadState = pagingItems.loadState
+
         when {
             loadState.refresh is LoadState.Loading -> {
                 item {
@@ -212,6 +235,7 @@ fun RepoPagingList(
                     ) { CircularProgressIndicator() }
                 }
             }
+
             loadState.refresh is LoadState.Error -> {
                 val e = loadState.refresh as LoadState.Error
                 item {
@@ -221,14 +245,18 @@ fun RepoPagingList(
                     )
                 }
             }
+
             loadState.append is LoadState.Loading -> {
                 item {
                     Box(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         contentAlignment = Alignment.Center
                     ) { CircularProgressIndicator(modifier = Modifier.size(24.dp)) }
                 }
             }
+
             loadState.append is LoadState.Error -> {
                 item {
                     TextButton(
@@ -237,6 +265,7 @@ fun RepoPagingList(
                     ) { Text("다시 시도") }
                 }
             }
+
             loadState.refresh is LoadState.NotLoading && pagingItems.itemCount == 0 -> {
                 item {
                     Box(
@@ -257,6 +286,15 @@ fun RepoItem(gitUserRepo: GitUserRepo, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = null,
+                    tint = if (gitUserRepo.isBookmarked) Color.Yellow else Color.DarkGray,
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 NetworkImageLayout(
                     avatarUrl = gitUserRepo.owner.avatarUrl,
                     contentDescription = "Profile of ${gitUserRepo.name}",
@@ -290,7 +328,7 @@ fun RepoItem(gitUserRepo: GitUserRepo, onClick: () -> Unit) {
             if (gitUserRepo.topics.isNotEmpty()) {
                 RepoTopicList(
                     topics = gitUserRepo.topics,
-                    modifier = Modifier.padding(top = 8.dp) // 설명과 간격 띄우기
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
 
@@ -302,7 +340,10 @@ fun RepoItem(gitUserRepo: GitUserRepo, onClick: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .size(8.dp)
-                            .background(color = MaterialTheme.colorScheme.secondary, shape = CircleShape)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = CircleShape
+                            )
                             .testTag("languageTag")
                     )
 
@@ -335,17 +376,13 @@ fun RepoItem(gitUserRepo: GitUserRepo, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 val dateText = remember(gitUserRepo.pushedAt) {
-                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
-                        timeZone = TimeZone.getTimeZone("UTC")
-                    }
-
-                    repoDateFormatter.format(inputFormat.parse(gitUserRepo.pushedAt)!!)
+                    gitUserRepo.pushedAt.toDateText()
                 }
 
                 Text(
                     text = "Updated on $dateText",
                     style = MaterialTheme.typography.bodySmall,
-                            fontSize = 12.sp,
+                    fontSize = 12.sp,
                 )
             }
         }
@@ -431,8 +468,13 @@ private fun SearchScreenEmptyPreview() {
         SearchScreen(
             searchKeyWord = "",
             searchResults = emptyItems,
+            selectedRepo = null,
+            onDialogConfirm = {},
+            onDialogDismiss = {},
             onSearchClick = {},
-            onItemClick = {}
+            onItemClick = {
+
+            }
         )
     }
 }
@@ -442,10 +484,9 @@ private fun SearchScreenEmptyPreview() {
 private fun SearchScreenResultPreview() {
     MaterialTheme {
         RepoItem(
-            gitUserRepo = testRepos[0],
-            {
+            gitUserRepo = testRepo[0]
+        ) {
 
-            }
-        )
+        }
     }
 }

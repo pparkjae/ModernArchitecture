@@ -23,16 +23,14 @@ class GithubSearchPagingSource(
 
             val items = response.items.map { it.asExternalModel() }
 
-            val nextKey = if (items.isEmpty() || items.size < perPage) {
-                null
-            } else {
-                page + 1
-            }
-
             LoadResult.Page(
                 data = items,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = nextKey
+                nextKey = if (items.isEmpty() || items.size < perPage) {
+                    null
+                } else {
+                    page + 1
+                }
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

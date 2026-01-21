@@ -27,7 +27,7 @@ val testUser = GitUser(
     siteAdmin = false
 )
 
-val testRepos = listOf(
+val testRepo = listOf(
     GitUserRepo(
         id = 1,
         name = "Android-App",
@@ -110,5 +110,5 @@ val notMyRepo = GitUserRepo(
 
 val testGitUserInfo = GitUserInfo(
     gitUser = testUser,
-    userRepos = testRepos
+    userRepo = testRepo
 )

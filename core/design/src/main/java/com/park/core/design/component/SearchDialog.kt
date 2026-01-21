@@ -1,4 +1,4 @@
-package com.park.modernsample.ui.dialog
+package com.park.core.design.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,11 +14,18 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun SearchDialog(
+fun CommonDialog(
+    title: String,
+    content: String,
+    confirmText: String = "예",
+    dismissText: String = "아니오",
+    onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
@@ -29,30 +36,52 @@ fun SearchDialog(
         onDismissRequest = { onDismiss() },
         title = {
             Text(
-                text = "Hello!",
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
             )
         },
         text = {
-            HorizontalDivider()
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 Text(
-                    text = "Hello!",
+                    text = content,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.padding(horizontal = 8.dp),
+                onClick = onConfirm,
                 colors = ButtonDefaults.textButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                 )
             ) {
-                Text(
-                    text = "검색",
-                )
+                Text(text = confirmText)
             }
         },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            ) {
+                Text(text = dismissText)
+            }
+        }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CommonDialogPreview() {
+    MaterialTheme {
+        CommonDialog(
+            title = "즐겨찾기 추가",
+            content = "Repository를 즐겨찾기에 추가하시겠습니까?",
+            onConfirm = { /* 확인 로직 */ },
+            onDismiss = { /* 취소 로직 */ }
+        )
+    }
 }

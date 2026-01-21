@@ -3,32 +3,29 @@ package com.park.core.test.repository
 import com.park.core.data.repository.UserRepository
 import com.park.core.model.GitUser
 import com.park.core.model.GitUserRepo
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flow
 
 class TestGithubUserRepository : UserRepository {
 
-    private val userFlow = MutableSharedFlow<GitUser>(replay = 1)
-    private val reposFlow = MutableSharedFlow<List<GitUserRepo>>(replay = 1)
+    private var testUser: GitUser? = null
+    private var testRepos: List<GitUserRepo> = emptyList()
     private var shouldThrowError = false
 
-    override fun user(id: String): Flow<GitUser> = flow {
+    override suspend fun user(id: String): GitUser {
         if (shouldThrowError) throw Exception("Test Error")
-        userFlow.collect { emit(it) }
+        return testUser ?: throw IllegalStateException("Test user is not set. Call sendUser() first.")
     }
 
-    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
+    override suspend fun userRepo(id: String): List<GitUserRepo> {
         if (shouldThrowError) throw Exception("Test Error")
-        reposFlow.collect { emit(it) }
+        return testRepos
     }
 
-    suspend fun emitUser(user: GitUser) {
-        userFlow.emit(user)
+    fun sendUser(user: GitUser) {
+        testUser = user
     }
 
-    suspend fun emitRepos(repos: List<GitUserRepo>) {
-        reposFlow.emit(repos)
+    fun sendRepos(repos: List<GitUserRepo>) {
+        testRepos = repos
     }
 
     fun setShouldThrowError(value: Boolean) {

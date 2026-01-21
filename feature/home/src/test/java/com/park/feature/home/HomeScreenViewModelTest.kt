@@ -1,6 +1,7 @@
 package com.park.feature.home
 
 import app.cash.turbine.test
+import com.park.core.domain.GithubUserInfoUseCase
 import com.park.core.model.GitUser
 import com.park.core.test.data.myRepo
 import com.park.core.test.data.notMyRepo
@@ -17,7 +18,8 @@ class HomeScreenViewModelTest {
     val dispatcherRule = MainDispatcherRule()
 
     private val userRepository = TestGithubUserRepository()
-    private val viewModel = HomeScreenViewModel(userRepository)
+    private val githubUserInfoUseCase = GithubUserInfoUseCase(userRepository)
+    private val viewModel = HomeScreenViewModel(githubUserInfoUseCase)
 
     @Test
     fun user_loading() = runTest {
@@ -31,15 +33,15 @@ class HomeScreenViewModelTest {
         viewModel.user.test {
             assertEquals(HomeUiState.Loading, awaitItem())
 
-            userRepository.emitUser(testUser)
-            userRepository.emitRepos(listOf(myRepo, notMyRepo))
+            userRepository.sendUser(testUser)
+            userRepository.sendRepos(listOf(myRepo, notMyRepo))
 
             val successState = awaitItem() as HomeUiState.Success
 
-            assertEquals(1, successState.gitUserInfo.userRepos.size)
+            assertEquals(1, successState.gitUserInfo.userRepo.size)
             assertEquals(
                 successState.gitUserInfo.gitUser.nodeId,
-                successState.gitUserInfo.userRepos[0].owner.nodeId
+                successState.gitUserInfo.userRepo[0].owner.nodeId
             )
         }
     }
@@ -52,7 +54,7 @@ class HomeScreenViewModelTest {
         viewModel.user.test {
             assertEquals(HomeUiState.Loading, awaitItem())
 
-            userRepository.emitUser(
+            userRepository.sendUser(
                 GitUser(
                     name = "Test",
                     nodeId = "1",
@@ -75,7 +77,7 @@ class HomeScreenViewModelTest {
                     siteAdmin = false
                 )
             )
-            userRepository.emitRepos(emptyList())
+            userRepository.sendRepos(emptyList())
 
             assertEquals(HomeUiState.LoadFailed, awaitItem())
         }

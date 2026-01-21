@@ -8,16 +8,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class GithubUserRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource
 ) : UserRepository {
-    override fun user(id: String): Flow<GitUser> = flow {
-        emit(networkDataSource.user(id).asExternalModel())
-    }.flowOn(Dispatchers.IO)
+    override suspend fun user(id: String): GitUser = networkDataSource.user(id).asExternalModel()
 
-    override fun userRepos(id: String): Flow<List<GitUserRepo>> = flow {
-        emit(networkDataSource.useRepos(id).asExternalModel())
-    }.flowOn(Dispatchers.IO)
+    override suspend fun userRepo(id: String): List<GitUserRepo> = networkDataSource.useRepos(id).asExternalModel()
 }

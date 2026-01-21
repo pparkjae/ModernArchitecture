@@ -29,6 +29,7 @@ android {
 dependencies {
     ksp(libs.hilt.compiler)
     api(projects.core.network)
+    api(projects.core.database)
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.paging.compose)

@@ -116,7 +116,7 @@ private fun HomeLayout(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Repositories (${gitUserInfo.userRepos.size})",
+            text = "Repositories (${gitUserInfo.userRepo.size})",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -130,7 +130,7 @@ private fun HomeLayout(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             repoListSection(
-                repos = gitUserInfo.userRepos,
+                repos = gitUserInfo.userRepo,
                 onClick = onRepoClick
             )
         }

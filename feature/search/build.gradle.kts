@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(projects.core.data)
     implementation(projects.core.design)
+    implementation(projects.core.domain)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.coil.kt)

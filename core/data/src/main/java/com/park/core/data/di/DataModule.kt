@@ -1,5 +1,7 @@
 package com.park.core.data.di
 
+import com.park.core.data.repository.BookmarkRepository
+import com.park.core.data.repository.GithubRepoBookmarkRepository
 import com.park.core.data.repository.GithubSearchRepository
 import com.park.core.data.repository.GithubUserRepository
 import com.park.core.data.repository.SearchRepository
@@ -22,4 +24,9 @@ abstract class DataModule {
     internal abstract fun bindSearchRepository(
         searchRepository: GithubSearchRepository,
     ): SearchRepository
+
+    @Binds
+    internal abstract fun bindBookmarkRepository(
+        bookmarkRepository: GithubRepoBookmarkRepository,
+    ): BookmarkRepository
 }
