@@ -14,6 +14,7 @@ data class GitUserRepo(
     val pushedAt: String,
     val stargazersCount: Int,
     val topics: List<String>,
+    val isBookmarked: Boolean = false
 )
 
 data class GitUserRepoOwner(

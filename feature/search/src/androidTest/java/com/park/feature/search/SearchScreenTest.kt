@@ -17,8 +17,8 @@ import com.park.core.model.GitUserRepo
 import com.park.core.test.data.testRepo
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
-import org.junit.runner.RunWith
 import org.junit.Test
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SearchScreenTest {
@@ -34,8 +34,11 @@ class SearchScreenTest {
             SearchScreen(
                 searchKeyWord = "",
                 searchResults = items,
-                onSearchClick = {},
-                onItemClick = {}
+                selectedRepo = null,
+                onDialogConfirm = { },
+                onDialogDismiss = { },
+                onSearchClick = { },
+                onItemClick = { }
             )
         }
         composeTestRule
@@ -52,8 +55,11 @@ class SearchScreenTest {
             SearchScreen(
                 searchKeyWord = "Android",
                 searchResults = items,
-                onSearchClick = {},
-                onItemClick = {}
+                selectedRepo = null,
+                onDialogConfirm = { },
+                onDialogDismiss = { },
+                onSearchClick = { },
+                onItemClick = { }
             )
         }
 
@@ -80,8 +86,11 @@ class SearchScreenTest {
             SearchScreen(
                 searchKeyWord = "",
                 searchResults = items,
-                onSearchClick = {},
-                onItemClick = {}
+                selectedRepo = null,
+                onDialogConfirm = { },
+                onDialogDismiss = { },
+                onSearchClick = { },
+                onItemClick = { }
             )
         }
 

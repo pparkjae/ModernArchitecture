@@ -15,16 +15,20 @@ internal class GithubSearchRepository @Inject constructor(
     override fun searchRepos(searchKeyWord: String): Flow<PagingData<GitUserRepo>> {
         return Pager(
             config = PagingConfig(
-                pageSize = NetworkDataSource.DEFAULT_ITEM_COUNT,
+                pageSize = DEFAULT_ITEM_COUNT,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
                 GithubSearchPagingSource(
                     networkDataSource = networkDataSource,
                     query = searchKeyWord,
-                    perPage = NetworkDataSource.DEFAULT_ITEM_COUNT
+                    perPage = DEFAULT_ITEM_COUNT
                 )
             }
         ).flow
+    }
+
+    companion object {
+        private const val DEFAULT_ITEM_COUNT = 25
     }
 }

@@ -2,25 +2,20 @@ package com.park.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.park.core.data.repository.UserRepository
-import com.park.core.model.GitUserInfo
+import com.park.core.domain.GithubUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    userRepository: UserRepository
+    githubUserInfoUseCase: GithubUserInfoUseCase
 ) : ViewModel() {
 
     private val gitUserId = MutableStateFlow("")
@@ -32,27 +27,17 @@ class HomeScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val user: StateFlow<HomeUiState> = gitUserId
         .flatMapLatest { userId ->
-            if (userId.isEmpty()) {
-                flowOf(HomeUiState.EmptyResult)
-            } else {
-                combine(
-                    userRepository.user(userId),
-                    userRepository.userRepo(userId)
-                ) { user, repos ->
-                    GitUserInfo(
-                        gitUser = user,
-                        userRepo = repos
-                            .filter {
-                                it.owner.nodeId.equals(user.nodeId, true)
-                            }
-                            .sortedByDescending { it.createdAt },
-                    )
-                }.map<GitUserInfo, HomeUiState> {
-                    HomeUiState.Success(it)
-                }.onStart {
+            flow {
+                if (userId.isEmpty()) {
+                    emit(HomeUiState.EmptyResult)
+                } else {
                     emit(HomeUiState.Loading)
-                }.catch {
-                    emit(HomeUiState.LoadFailed)
+                    try {
+                        val userInfo = githubUserInfoUseCase(userId)
+                        emit(HomeUiState.Success(userInfo))
+                    } catch (e: Exception) {
+                        emit(HomeUiState.LoadFailed)
+                    }
                 }
             }
         }.stateIn(

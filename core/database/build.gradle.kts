@@ -1,19 +1,22 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.park.core.data"
+    namespace = "com.park.core.database"
     compileSdk = 36
     testOptions.unitTests.isIncludeAndroidResources = true
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 23
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -24,13 +27,20 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
     ksp(libs.hilt.compiler)
-    api(projects.core.network)
-    api(projects.core.database)
+    ksp(libs.room.compiler)
 
+    api(projects.core.model)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.paging.compose)
+    implementation(libs.kotlinx.serialization.json)
 }
