@@ -32,6 +32,7 @@ test: ViewModel 및 비즈니스 로직 단위 테스트
 ```text
 * core:model - 외부 의존성이 없는 순수 데이터 모델(Pure Data Class) 집합
 * core:network - Retrofit/OkHttp 기반의 API 통신, DTO 및 DataSource 정의
+* core:database - Room 기반의 API 통신, DAT 및 Entity 정의
 * core:data	- Repository 패턴 구현 및 데이터 가공(Mapper)을 통한 데이터 처리 전략
 * core:design - 앱 전반의 디자인 시스템(Color, Type, Theme) 및 공통 UI 컴포넌트
 * core:test - Feature 테스트를 위한 Test 데이터 및 Test Repository 지원
@@ -46,5 +47,6 @@ Async: Coroutines & Flow
 Network: Retrofit2 & OkHttp
 Image Loader: Coil
 List : Compose-paging
+Database: Room
 ```
 
