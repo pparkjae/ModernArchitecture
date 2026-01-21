@@ -13,11 +13,12 @@ root
 │   └── ...
 └── core                # 앱 전반에서 공유되는 공통 로직 및 인프라
     ├── model           # 도메인 모델 (Pure Kotlin)
+    ├── database        # Database (Room, Entity)
     ├── data            # 데이터 저장소 및 비즈니스 로직 처리 (Repository)
     ├── network         # 네트워크 API 통신 (Retrofit, DTO)
     ├── design          # 공통 UI 컴포넌트 및 테마 (Design System)
     ├── test            # Test Data 및 Test Repository
-    └── domain          # 복잡한 유스케이스 (선택적 사용 예정)
+    └── domain          # 결합 Repository UseCase (선택적 사용)
 ```
 
 ## Feature Modules (:feature)
