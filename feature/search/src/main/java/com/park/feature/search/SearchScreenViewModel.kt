@@ -27,7 +27,9 @@ class SearchScreenViewModel @Inject constructor(
     val pagingDataFlow: Flow<PagingData<GitUserRepo>> = _searchRepositoryKeyword
         .filter { it.isNotBlank() }
         .flatMapLatest { searchKeyword ->
-            githubBookmarkPageUseCase.searchReposWithBookmarkStatus(searchKeyword, viewModelScope)
+            githubBookmarkPageUseCase.searchReposWithBookmarkStatus(
+                githubBookmarkPageUseCase.searchRepos(searchKeyword).cachedIn(viewModelScope)
+            )
         }
         .cachedIn(viewModelScope)
 
